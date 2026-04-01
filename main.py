@@ -325,7 +325,7 @@ if __name__ == "__main__":
             device=config.DEVICE)
         data_loader_dict["unsupervised"] = DataLoader(
             dataset=unsupervised_data,
-            num_workers=16,
+            num_workers=0,
             batch_size=1,
             shuffle=False,
             worker_init_fn=seed_worker,
