@@ -145,7 +145,7 @@ def calculate_metric_per_video(predictions, labels, fs=30, diff_flag=True, use_b
         # Note: to more closely match results in the NeurIPS 2023 toolbox paper,
         # we recommend using 0.75 in place of 0.6 and 2.5 in place of 3.3 in the 
         # below line.
-        [b, a] = butter(1, [0.6 / fs * 2, 3.3 / fs * 2], btype='bandpass')
+        [b, a] = butter(1, [0.75 / fs * 2, 2.5 / fs * 2], btype='bandpass')
         predictions = scipy.signal.filtfilt(b, a, np.double(predictions))
         labels = scipy.signal.filtfilt(b, a, np.double(labels))
     
