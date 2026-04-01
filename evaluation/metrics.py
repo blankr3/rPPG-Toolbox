@@ -215,3 +215,27 @@ def calculate_metrics(predictions, labels, config):
                 raise ValueError("Wrong Test Metric Type")
     else:
         raise ValueError("Inference evaluation method name wrong!")
+
+    # Build and return structured results dict
+    results = {"method": config.INFERENCE.EVALUATION_METHOD}
+    if config.INFERENCE.EVALUATION_METHOD == "FFT":
+        pred_hr, gt_hr = predict_hr_fft_all, gt_hr_fft_all
+    else:
+        pred_hr, gt_hr = predict_hr_peak_all, gt_hr_peak_all
+
+    pred_hr = np.array(pred_hr)
+    gt_hr = np.array(gt_hr)
+    results["pred_hr"] = pred_hr
+    results["gt_hr"] = gt_hr
+    results["SNR_all"] = np.array(SNR_all)
+    results["MACC_all"] = np.array(MACC_all)
+    n = len(pred_hr)
+    if n > 0:
+        results["MAE"] = float(np.mean(np.abs(pred_hr - gt_hr)))
+        results["RMSE"] = float(np.sqrt(np.mean(np.square(pred_hr - gt_hr))))
+        results["MAPE"] = float(np.mean(np.abs((pred_hr - gt_hr) / gt_hr)) * 100)
+        corr = np.corrcoef(pred_hr, gt_hr)
+        results["Pearson"] = float(corr[0][1]) if corr.shape == (2, 2) else float('nan')
+        results["SNR"] = float(np.mean(SNR_all))
+        results["MACC"] = float(np.mean(MACC_all))
+    return results
